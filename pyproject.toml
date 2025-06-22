@@ -4,39 +4,31 @@ version = "0.0.1"
 description = "Ansys Data Model Generator"
 readme = "README.md"
 requires-python = ">=3.10"
-license = { file = "LICENSE" }
 authors = []
 maintainers = [
-    { name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com" },
+  { name = "PyAnsys developers", email = "pyansys.maintainers@ansys.com" },
 ]
 
-dependencies = [
-    "semver",
-    "protobuf",
-    "pystache"
-]
+dependencies = ["semver", "protobuf", "pystache"]
 
 [project.optional-dependencies]
-standalone = [
-    "grpcio-tools"
-]
+standalone = ["grpcio-tools"]
 
 [project.scripts]
 protoc-gen-ansgen = "ansys_datamodel_generator.plugin:main"
 
 
-
 [tool.poetry]
-packages = [
-    { include = "ansys_datamodel_generator" }
-]
+packages = [{ include = "ansys_datamodel_generator" }]
 include = [
-    { path = "ansys_datamodel_generator/templates", format = ["sdist", "wheel"] }
+  { path = "ansys_datamodel_generator/templates", format = [
+    "sdist",
+    "wheel",
+  ] },
 ]
 
 [tool.poetry.group.codestyle.dependencies]
 ruff = "*"
-
 
 
 [tool.poe.executor]
@@ -49,8 +41,12 @@ codestyle = { cmd = "ruff check ansys_datamodel_generator/ scripts/", help = "Li
 script = "scripts:clean(UNINSTALL, CHECK)"
 help = "Generate code, executed from python script (run with '-h' argument to receive help)"
 args = [
-    { name = "UNINSTALL", options = ["--uninstall"], type = "boolean", help = "Remove 'poetry.lock' files" },
-    { name = "CHECK", options = ["--dry"], type = "boolean", help = "Just print file names to remove without actually removing them" }
+  { name = "UNINSTALL", options = [
+    "--uninstall",
+  ], type = "boolean", help = "Remove 'poetry.lock' files" },
+  { name = "CHECK", options = [
+    "--dry",
+  ], type = "boolean", help = "Just print file names to remove without actually removing them" },
 ]
 
 [tool.poe.tasks.generate-script]
@@ -60,22 +56,36 @@ help = "Generate code, executed from python script (run with '-h' argument to re
 [tool.poe.tasks.generate-system]
 help = "Generate code, executed from protoc CLI"
 args = [
-    { name = "PROTOC", options = ["-p", "--protoc"], default = "protoc", help = "Use this as a protobuf compiler" },
-    { name = "PROTOC_HOME", options = ["-h", "--home"], default = "$(which protoc)/../include", help = "Path to protoc include directory" },
-    { name = "PROTO_IN", options = ["-i", "--input"], default = "./tests", help = "Path prefix to all input protobuf files" },
-    { name = "PROTO_OUT", options = ["-o", "--output"], default = "./library", help = "Path prefix to all output generated files" },
-    { name = "PROTO_OPTION", options = ["-e", "--option"], help = "Plugin generation option" },
-    { name = "PROTO_FILES", positional = true, multiple = true, help = "Input protoc files" }
+  { name = "PROTOC", options = [
+    "-p",
+    "--protoc",
+  ], default = "protoc", help = "Use this as a protobuf compiler" },
+  { name = "PROTOC_HOME", options = [
+    "-h",
+    "--home",
+  ], default = "$(which protoc)/../include", help = "Path to protoc include directory" },
+  { name = "PROTO_IN", options = [
+    "-i",
+    "--input",
+  ], default = "./tests", help = "Path prefix to all input protobuf files" },
+  { name = "PROTO_OUT", options = [
+    "-o",
+    "--output",
+  ], default = "./library", help = "Path prefix to all output generated files" },
+  { name = "PROTO_OPTION", options = [
+    "-e",
+    "--option",
+  ], help = "Plugin generation option" },
+  { name = "PROTO_FILES", positional = true, multiple = true, help = "Input protoc files" },
 ]
 
-    [[tool.poe.tasks.generate-system.sequence]]
-    cmd = "${PROTOC} -I=${PROTOC_HOME} -I=./schemas --python_out=${VIRTUAL_ENV}/Lib/site-packages/google/protobuf ../schemas/simulation/_meta.proto"
-    env = { "VIRTUAL_ENV" = { default = "$(which python)/.." } }
+[[tool.poe.tasks.generate-system.sequence]]
+cmd = "${PROTOC} -I=${PROTOC_HOME} -I=./schemas --python_out=${VIRTUAL_ENV}/Lib/site-packages/google/protobuf ../schemas/simulation/_meta.proto"
+env = { "VIRTUAL_ENV" = { default = "$(which python)/.." } }
 
-    [[tool.poe.tasks.generate-system.sequence]]
-    cmd = "${PROTOC} -I=${PROTOC_HOME} -I=./schemas -I=${PROTO_IN} --ansgen_out=${PROTO_OUT}/${PROTO_OPTION} --ansgen_opt=${PROTO_OPTION} ${PROTO_FILES}"
-    env = { "ANSGEN_LOG_LEVEL" = { default = "INFO" } }
-
+[[tool.poe.tasks.generate-system.sequence]]
+cmd = "${PROTOC} -I=${PROTOC_HOME} -I=./schemas -I=${PROTO_IN} --ansgen_out=${PROTO_OUT}/${PROTO_OPTION} --ansgen_opt=${PROTO_OPTION} ${PROTO_FILES}"
+env = { "ANSGEN_LOG_LEVEL" = { default = "INFO" } }
 
 
 [tool.ruff]
@@ -88,18 +98,8 @@ docstring-code-format = true
 docstring-code-line-length = "dynamic"
 
 [tool.ruff.lint]
-select = [
-    "E",
-    "F",
-    "I",
-    "N",
-    "PTH",
-    "TD",
-]
-ignore = [
-    "TD002",
-    "E501"
-]
+select = ["E", "F", "I", "N", "PTH", "TD"]
+ignore = ["TD002", "E501"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "numpy"
@@ -107,7 +107,6 @@ convention = "numpy"
 [tool.ruff.lint.isort]
 combine-as-imports = true
 force-sort-within-sections = true
-
 
 
 [build-system]
